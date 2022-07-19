@@ -66,25 +66,13 @@ def start():
                     logger.info(f'{symbol} {Magic_Eden_floor}')
                     mentions[symbol]['Magic Eden']['floor']=Magic_Eden_floor
                     try:
-                        if mentions[symbol]['mentions']>=was_mentions[symbol]['mentions']:
-                            try:
-                                message+=f"{mentions[symbol]['name']} - упоминания в твиттере увеличились на {int((mentions[symbol]['mentions']/was_mentions[symbol]['mentions']-1)*100)}%, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
-                            except Exception as e:
-                                message+=f"{mentions[symbol]['name']} - упоминания в твиттере увеличились на {mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
-                        else:
-                            message+=f"{mentions[symbol]['name']} - упоминания в твиттере уменьшились на {int((1-mentions[symbol]['mentions']/was_mentions[symbol]['mentions'])*100)}%, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
+                        message+=f"{mentions[symbol]['name']} - упоминания в твиттере {mentions[symbol]['mentions']}-->{was_mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
                     except Exception as e:
                         logger.info(f'4 {e}')
                 except Exception as e:
                     logger.info(f'3 {symbol} {e}')
                     try:
-                        if mentions[symbol]['mentions']>=was_mentions[symbol]['mentions']:
-                            try:
-                                message+=f"{mentions[symbol]['name']} - упоминания в твиттере увеличились на {int((mentions[symbol]['mentions']/was_mentions[symbol]['mentions']-1)*100)}%, floor {was_mentions[symbol]['Magic Eden']['floor']}-->ошибка при получении данных\n"
-                            except Exception as e:
-                                message+=f"{mentions[symbol]['name']} - упоминания в твиттере увеличились на {mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->ошибка при получении данных\n"
-                        else:
-                            message+=f"{mentions[symbol]['name']} - упоминания в твиттере уменьшились на {int((1-mentions[symbol]['mentions']/was_mentions[symbol]['mentions'])*100)}%, floor {was_mentions[symbol]['Magic Eden']['floor']}-->ошибка при получении данных\n"
+                        message+=f"{mentions[symbol]['name']} - упоминания в твиттере {mentions[symbol]['mentions']}-->{was_mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->Не удалось получить новые данные\n"
                     except Exception as e:
                         logger.info(f'4 {e}')
             while message:
