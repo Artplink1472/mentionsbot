@@ -65,16 +65,13 @@ def start():
                                                         timeout=60).json()['floorPrice']/1000000000
                     logger.info(f'{symbol} {Magic_Eden_floor}')
                     mentions[symbol]['Magic Eden']['floor']=Magic_Eden_floor
-                    try:
-                        message+=f"{mentions[symbol]['name']} - упоминания в твиттере {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
-                    except Exception as e:
-                        logger.info(f'4 {e}')
+                    if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['Magic Eden']['floor']>was_mentions[symbol]['Magic Eden']['floor']:
+                        try:
+                            message+=f"{mentions[symbol]['name']} - упоминания в твиттере {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
+                        except Exception as e:
+                            logger.info(f'4 {e}')
                 except Exception as e:
                     logger.info(f'3 {symbol} {e}')
-                    try:
-                        message+=f"{mentions[symbol]['name']} - упоминания в твиттере {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->Не удалось получить новые данные\n"
-                    except Exception as e:
-                        logger.info(f'4 {e}')
             while message:
                 send=message[:message[:4096].rfind('\n')+1]
                 message=message[message[:4096].rfind('\n')+1:]
