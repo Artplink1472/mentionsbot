@@ -110,7 +110,9 @@ def start():
                 mentions[was_mentions[symbol]['Magic Eden']['twitter']]=mentions_count
             for nickname in sorted(mentions, key=lambda x: mentions[x], reverse=True)[:10]:
                 try:
-                    message+=f'{nickname} {mentions[x]}\n'
+                    message+=f'{nickname} {mentions[nickname]}\n'
+                except:
+                    logger.info(f'5 {e} {nickname}')
             del mentions, was_mentions
             logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
             logger.info(f'Следующий запуск:{time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(start_time+21600))}')
