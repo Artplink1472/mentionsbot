@@ -113,6 +113,8 @@ def start():
                     message+=f'{nickname} {mentions[nickname]}\n'
                 except:
                     logger.info(f'5 {e} {nickname}')
+            for user in config.rassilka:
+                bot.send_message(user, message)
             del mentions, was_mentions
             logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
             logger.info(f'Следующий запуск:{time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(start_time+21600))}')
