@@ -39,7 +39,7 @@ def start():
                     if collection['symbol'] not in was_mentions and collection['twitter']:
                         was_mentions[collection['symbol']]={"Magic Eden": {"twitter": collection['twitter'], "floor": 'Just added'}, "mentions": 0, "name": collection['name']}
                 except Exception as e:
-                    logger.info(f'6 {collection['symbol']}')
+                    logger.info(f"6 {collection['symbol']}")
             mentions=copy.deepcopy(was_mentions)
             for symbol in was_mentions:
                 mentions_count = 0
