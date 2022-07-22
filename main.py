@@ -108,8 +108,6 @@ def start():
                     except Exception as e:
                         logger.info(f'2 {e}')
                 mentions[was_mentions[symbol]['Magic Eden']['twitter']]=mentions_count
-                logger.info(f"{was_mentions[symbol]['Magic Eden']['twitter']} {mentions_count}")
-            logger.info(f'{mentions}')
             for nickname in sorted(mentions, key=lambda x: mentions[x], reverse=True)[:10]:
                 try:
                     message+=f'{nickname} {mentions[nickname]}\n'
