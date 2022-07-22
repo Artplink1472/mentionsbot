@@ -33,6 +33,13 @@ def start():
             message=''
             with open('mentions.json', 'r') as f1:
                 was_mentions=json.load(f1)
+            new_collections=requests.get(f'https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=200').json()
+            for collection in new_collections:
+                try:
+                    if collection['symbol'] not in was_mentions and collection['twitter']:
+                        was_mentions[collection['symbol']]={"Magic Eden": {"twitter": collection['twitter'], "floor": 'Just added'}, "mentions": 0, "name": collection['name']}
+                except Exception as e:
+                    logger.info(f'6 {collection['symbol']}')
             mentions=copy.deepcopy(was_mentions)
             for symbol in was_mentions:
                 mentions_count = 0
