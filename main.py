@@ -37,7 +37,7 @@ def start():
             for collection in new_collections:
                 try:
                     if collection['symbol'] not in was_mentions and collection['twitter']:
-                        was_mentions[collection['symbol']]={"Magic Eden": {"twitter": collection['twitter'], "floor": 'Just added'}, "mentions": 0, "name": collection['name']}
+                        was_mentions[collection['symbol']]={"Magic Eden": {"twitter": collection['twitter'][collection['twitter'].rfind('/')+1:], "floor": 'Just added'}, "mentions": 0, "name": collection['name']}
                 except Exception as e:
                     logger.info(f"6 {collection['symbol']}")
             mentions=copy.deepcopy(was_mentions)
