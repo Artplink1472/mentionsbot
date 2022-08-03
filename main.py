@@ -49,36 +49,36 @@ def start():
                                                                     headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA','x-csrf-token': info[1]},
                                                                     cookies={' auth_token': info[0], ' ct0': info[1]},
                                                                     timeout=10).json()
+                    f+=1
+                    mentions_count+=len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400, mentionsrequest['globalObjects']['tweets'])))
+                    cursor=mentionsrequest['timeline']['instructions'][0]['addEntries']['entries'][-1]['content']['operation']['cursor']['value']
+                    while len(mentionsrequest['globalObjects']['tweets'])-len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400, mentionsrequest['globalObjects']['tweets'])))<=1 and mentionsrequest['globalObjects']['tweets']:
+                        try:
+                            info=cookies[(f//100)%89]
+                            mentionsrequest=requests.get('https://twitter.com/i/api/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&include_ext_has_nft_avatar=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&include_ext_sensitive_media_warning=true&include_ext_trusted_friends_metadata=true&send_error_codes=true&simple_quoted_tweet=true&q=('+urllib.parse.quote(was_mentions[symbol]['Magic Eden']['twitter'],safe='')+')%20-filter%3Areplies&tweet_search_mode=live&count=100&query_source=recent_search_click&cursor='+urllib.parse.quote(cursor,safe='')+'&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel%2ChasNftAvatar%2CvoiceInfo%2Cenrichments%2CsuperFollowMetadata%2CunmentionInfo',
+                                                                headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA','x-csrf-token': info[1]},
+                                                                cookies={' auth_token': info[0], ' ct0': info[1]},
+                                                                timeout=10).json()
+                            mentions_count+=len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400, mentionsrequest['globalObjects']['tweets'])))
+                            cursor=mentionsrequest['timeline']['instructions'][-1]['replaceEntry']['entry']['content']['operation']['cursor']['value']
+                            f+=1
+                        except Exception as e:
+                            logger.info(f'2 {e}')
+                    mentions[symbol]['mentions']=mentions_count
+                    try:
+                        Magic_Eden_floor=requests.get(f"https://api-mainnet.magiceden.dev/v2/collections/{symbol}/stats",
+                                                            timeout=60).json()['floorPrice']/1000000000
+                        logger.info(f'{symbol} {Magic_Eden_floor}')
+                        mentions[symbol]['Magic Eden']['floor']=Magic_Eden_floor
+                        if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['Magic Eden']['floor']>was_mentions[symbol]['Magic Eden']['floor'] and mentions[symbol]['mentions']/was_mentions[symbol]['mentions']>=1.5:
+                            try:
+                                message+=f"{mentions[symbol]['name']} - упоминания в твиттере {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
+                            except Exception as e:
+                                logger.info(f'4 {e}')
+                    except Exception as e:
+                        logger.info(f'3 {symbol} {e}')
                 except Exception as e:
                     logger.info(f'1 {e}')
-                f+=1
-                mentions_count+=len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400, mentionsrequest['globalObjects']['tweets'])))
-                cursor=mentionsrequest['timeline']['instructions'][0]['addEntries']['entries'][-1]['content']['operation']['cursor']['value']
-                while len(mentionsrequest['globalObjects']['tweets'])-len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400, mentionsrequest['globalObjects']['tweets'])))<=1 and mentionsrequest['globalObjects']['tweets']:
-                    try:
-                        info=cookies[(f//100)%89]
-                        mentionsrequest=requests.get('https://twitter.com/i/api/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&include_ext_has_nft_avatar=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&include_ext_sensitive_media_warning=true&include_ext_trusted_friends_metadata=true&send_error_codes=true&simple_quoted_tweet=true&q=('+urllib.parse.quote(was_mentions[symbol]['Magic Eden']['twitter'],safe='')+')%20-filter%3Areplies&tweet_search_mode=live&count=100&query_source=recent_search_click&cursor='+urllib.parse.quote(cursor,safe='')+'&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel%2ChasNftAvatar%2CvoiceInfo%2Cenrichments%2CsuperFollowMetadata%2CunmentionInfo',
-                                                            headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA','x-csrf-token': info[1]},
-                                                            cookies={' auth_token': info[0], ' ct0': info[1]},
-                                                            timeout=10).json()
-                        mentions_count+=len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsrequest['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400, mentionsrequest['globalObjects']['tweets'])))
-                        cursor=mentionsrequest['timeline']['instructions'][-1]['replaceEntry']['entry']['content']['operation']['cursor']['value']
-                        f+=1
-                    except Exception as e:
-                        logger.info(f'2 {e}')
-                mentions[symbol]['mentions']=mentions_count
-                try:
-                    Magic_Eden_floor=requests.get(f"https://api-mainnet.magiceden.dev/v2/collections/{symbol}/stats",
-                                                        timeout=60).json()['floorPrice']/1000000000
-                    logger.info(f'{symbol} {Magic_Eden_floor}')
-                    mentions[symbol]['Magic Eden']['floor']=Magic_Eden_floor
-                    if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['Magic Eden']['floor']>was_mentions[symbol]['Magic Eden']['floor'] and mentions[symbol]['mentions']/was_mentions[symbol]['mentions']>=1.5:
-                        try:
-                            message+=f"{mentions[symbol]['name']} - упоминания в твиттере {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
-                        except Exception as e:
-                            logger.info(f'4 {e}')
-                except Exception as e:
-                    logger.info(f'3 {symbol} {e}')
             while message:
                 send=message[:message[:4096].rfind('\n')+1]
                 message=message[message[:4096].rfind('\n')+1:]
