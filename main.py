@@ -117,7 +117,7 @@ def start():
                             logger.info(f'2 {e} {symbol}')
                 except Exception as e:
                     logger.info(f'!while! {e} {symbol}')
-                    bot.send_message(f'!while! {e} {symbol}', config.myid)
+                    bot.send_message(config.myid, f'!while! {e} {symbol}')
                 mentions[was_mentions[symbol]['Magic Eden']['twitter']]=mentions_count
                 logger.info(f"{was_mentions[symbol]['Magic Eden']['twitter']} {mentions_count}")
             for nickname in sorted(mentions, key=lambda x: mentions[x], reverse=True)[:10]:
