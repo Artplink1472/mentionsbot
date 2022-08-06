@@ -79,6 +79,8 @@ def start():
                                 message+=f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']},\nfloor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']},\nlistedCount {was_mentions[symbol]['Magic Eden'].get('listedCount')}-->{mentions[symbol]['Magic Eden']['listedCount']},\nSold24hr {was_mentions[symbol]['Magic Eden'].get('avgPrice24hr')}-->{mentions[symbol]['Magic Eden']['avgPrice24hr']}\n"
                             except Exception as e:
                                 logger.info(f'4 message {e}')
+                        driver.get(f'https://api-mainnet.magiceden.io/collections/{symbol}?edge_cache=true')
+                        mentions[symbol]['Magic Eden']['image']=json.loads(driver.find_element("xpath", "//pre").text)['image']
                     except Exception as e:
                         logger.info(f'3 {symbol} {e}')
                 except Exception as e:
