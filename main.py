@@ -80,6 +80,7 @@ def start():
                     try:
                         if webdriver%300==0:
                             driver.quit()
+                            logger.info('quited')
                             options = uc.ChromeOptions()
                             options.add_argument("start-maximized")
                             options.add_argument("enable-automation")
@@ -91,6 +92,7 @@ def start():
                             options.add_argument("--disable-gpu")
                             options.add_argument("--disable-infobars")
                             driver = uc.Chrome(options=options, use_subprocess=True)
+                            logger.info('new driver created')
                         driver.get(f'https://api-mainnet.magiceden.io/rpc/getCollectionEscrowStats/{symbol}?edge_cache=true')
                         webdriver+=1
                         Magic_Eden=json.loads(driver.find_element("xpath", "//pre").text)['results']
