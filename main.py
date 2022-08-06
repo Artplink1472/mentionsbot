@@ -74,7 +74,7 @@ def start():
                         Magic_Eden=json.loads(driver.find_element("xpath", "//pre").text)['results']
                         logger.info(f'{symbol} Magic_Eden')
                         mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['avgPrice24hr']=format(Magic_Eden['floorPrice']/1000000000,'.2f'),Magic_Eden['listedCount'],format(Magic_Eden['avgPrice24hr']/1000000000,'.2f')
-                        if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['mentions']/was_mentions[symbol]['mentions']>=1.5 andmentions[symbol]['mentions']>=20:
+                        if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['mentions']/was_mentions[symbol]['mentions']>=1.5 and mentions[symbol]['mentions']>=20:
                             try:
                                 message+=f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']},\nfloor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']},\nlistedCount {was_mentions[symbol]['Magic Eden'].get('listedCount')}-->{mentions[symbol]['Magic Eden']['listedCount']},\nSold24hr {was_mentions[symbol]['Magic Eden'].get('avgPrice24hr')}-->{mentions[symbol]['Magic Eden']['avgPrice24hr']}\n"
                             except Exception as e:
