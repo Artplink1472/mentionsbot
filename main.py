@@ -78,7 +78,7 @@ def start():
                             logger.info(f'2 {e}')
                     mentions[symbol]['mentions']=mentions_count
                     try:
-                        if webdriver%300==0:
+                        if webdriver%300==0 or webdriver%300==1:
                             driver.quit()
                             logger.info('quited')
                             options = uc.ChromeOptions()
