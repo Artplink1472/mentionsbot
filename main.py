@@ -1,4 +1,3 @@
-from telebot import types
 import time
 import telebot
 import traceback
@@ -8,7 +7,12 @@ import urllib
 import json
 import logging
 import copy
+import undetected_chromedriver as uc
 
+opts = uc.ChromeOptions()
+opts.add_argument("--headless")
+
+driver = uc.Chrome(options=opts, use_subprocess=True)
 bot = telebot.TeleBot(config.token_bot)
 
 bot.send_message(config.myid, '✅ Бот запущен')
@@ -66,15 +70,15 @@ def start():
                             logger.info(f'2 {e}')
                     mentions[symbol]['mentions']=mentions_count
                     try:
-                        Magic_Eden_floor=requests.get(f"https://api-mainnet.magiceden.dev/v2/collections/{symbol}/stats",
-                                                            timeout=60).json()['floorPrice']/1000000000
-                        logger.info(f'{symbol} {Magic_Eden_floor}')
-                        mentions[symbol]['Magic Eden']['floor']=Magic_Eden_floor
-                        if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['Magic Eden']['floor']>was_mentions[symbol]['Magic Eden']['floor'] and mentions[symbol]['mentions']/was_mentions[symbol]['mentions']>=1.5:
+                        driver.get(f'https://api-mainnet.magiceden.io/rpc/getCollectionEscrowStats/{symbol}?edge_cache=true')
+                        Magic_Eden=json.loads(driver.find_element("xpath", "//pre").text)['results']
+                        logger.info(f'{symbol} Magic_Eden')
+                        mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['avgPrice24hr']=format(Magic_Eden['floorPrice']/1000000000,'.2f'),Magic_Eden['listedCount'],format(Magic_Eden['avgPrice24hr']/1000000000,'.2f')
+                        if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['mentions']/was_mentions[symbol]['mentions']>=1.5 andmentions[symbol]['mentions']>=20:
                             try:
-                                message+=f"{mentions[symbol]['name']} - упоминания в твиттере {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']}, floor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']}\n"
+                                message+=f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']},\nfloor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']},\nlistedCount {was_mentions[symbol]['Magic Eden'].get('listedCount')}-->{mentions[symbol]['Magic Eden']['listedCount']},\nSold24hr {was_mentions[symbol]['Magic Eden'].get('avgPrice24hr')}-->{mentions[symbol]['Magic Eden']['avgPrice24hr']}\n"
                             except Exception as e:
-                                logger.info(f'4 {e}')
+                                logger.info(f'4 message {e}')
                     except Exception as e:
                         logger.info(f'3 {symbol} {e}')
                 except Exception as e:
