@@ -9,10 +9,16 @@ import logging
 import copy
 import undetected_chromedriver as uc
 
-opts = uc.ChromeOptions()
-opts.add_argument("--headless")
-
-driver = uc.Chrome(options=opts, use_subprocess=True)
+options = uc.ChromeOptions()
+options.add_argument("start-maximized")
+options.add_argument("enable-automation")
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-browser-side-navigation")
+options.add_argument("--disable-gpu")
+options.add_argument("--disable-infobars")
+driver = uc.Chrome(options=options, use_subprocess=True)
 bot = telebot.TeleBot(config.token_bot)
 
 bot.send_message(config.myid, '✅ Бот запущен')
@@ -73,7 +79,7 @@ def start():
                         driver.get(f'https://api-mainnet.magiceden.io/rpc/getCollectionEscrowStats/{symbol}?edge_cache=true')
                         Magic_Eden=json.loads(driver.find_element("xpath", "//pre").text)['results']
                         logger.info(f'{symbol} Magic_Eden')
-                        mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['avgPrice24hr']=format(Magic_Eden['floorPrice']/1000000000,'.2f'),Magic_Eden['listedCount'],format(Magic_Eden['avgPrice24hr']/1000000000,'.2f')
+                        mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['avgPrice24hr']=format(Magic_Eden['floorPrice']/1000000000,'.2f'),Magic_Eden['listedCount'],format((Magic_Eden.get('avgPrice24hr') if Magic_Eden.get('avgPrice24hr') else 0)/1000000000,'.2f')
                         if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['mentions']/was_mentions[symbol]['mentions']>=1.5 and mentions[symbol]['mentions']>=20:
                             try:
                                 message+=f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']},\nfloor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']},\nlistedCount {was_mentions[symbol]['Magic Eden'].get('listedCount')}-->{mentions[symbol]['Magic Eden']['listedCount']},\nSold24hr {was_mentions[symbol]['Magic Eden'].get('avgPrice24hr')}-->{mentions[symbol]['Magic Eden']['avgPrice24hr']}\n"
