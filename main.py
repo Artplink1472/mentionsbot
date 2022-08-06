@@ -96,7 +96,7 @@ def start():
                         driver.get(f'https://api-mainnet.magiceden.io/rpc/getCollectionEscrowStats/{symbol}?edge_cache=true')
                         webdriver+=1
                         Magic_Eden=json.loads(driver.find_element("xpath", "//pre").text)['results']
-                        logger.info(f'{symbol} Magic_Eden')
+                        logger.info(f'{symbol} Magic_Eden {webdriver}')
                         mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['avgPrice24hr']=format(Magic_Eden['floorPrice']/1000000000,'.2f'),Magic_Eden['listedCount'],format((Magic_Eden.get('avgPrice24hr') if Magic_Eden.get('avgPrice24hr') else 0)/1000000000,'.2f')
                         if was_mentions[symbol]['Magic Eden']['floor']!='Just added' and mentions[symbol]['mentions']/was_mentions[symbol]['mentions']>=1.5 and mentions[symbol]['mentions']>=20:
                             try:
