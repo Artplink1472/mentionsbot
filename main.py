@@ -9,18 +9,6 @@ import logging
 import copy
 import undetected_chromedriver as uc
 
-options = uc.ChromeOptions()
-options.add_argument("start-maximized")
-options.add_argument("enable-automation")
-options.add_argument("--headless")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--disable-browser-side-navigation")
-options.add_argument('--dns-prefetch-disable')
-options.add_argument("--disable-gpu")
-options.add_argument("--disable-infobars")
-driver = uc.Chrome(options=options, use_subprocess=True)
-
 bot = telebot.TeleBot(config.token_bot)
 
 bot.send_message(config.myid, '✅ Бот запущен')
@@ -37,6 +25,17 @@ logger.addHandler(fh)
 
 def start():
     try:
+        options = uc.ChromeOptions()
+        options.add_argument("start-maximized")
+        options.add_argument("enable-automation")
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-browser-side-navigation")
+        options.add_argument('--dns-prefetch-disable')
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-infobars")
+        driver = uc.Chrome(options=options, use_subprocess=True)
         webdriver=0
         f=0
         month={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
