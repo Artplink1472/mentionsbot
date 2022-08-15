@@ -82,6 +82,7 @@ async def twitter_all_mentions(symbol, guest_token):
 
 app_storage={}
 try:
+    k=0
     options = uc.ChromeOptions()
     options.add_argument("start-maximized")
     options.add_argument("enable-automation")
@@ -199,6 +200,7 @@ try:
                 time.sleep(1)
         with open('mentions.json', 'w') as f1:
             json.dump(mentions, f1)
+        k+=1
         mentions={}
         message = 'Топ 10\n'
         async def start2(was_mentions, guest_token):
@@ -213,17 +215,18 @@ try:
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
                     mentions[symbol[0]] = symbol[1]
-        start_time2 = time.time()
-        bot.send_message(config.myid, f'{start_time2}')
-        asyncio.run(start2(was_mentions, guest_token))
-        logger.info(f'На выполнение прасинга 2 ушло {time.time() - start_time2}')
-        for nickname in sorted(mentions, key=lambda x: mentions[x], reverse=True)[:10]:
-            try:
-                message += f'{nickname} {mentions[nickname]}\n'
-            except Exception as e:
-                logger.info(f'5 {e} {nickname}')
-        for user in config.rassilka:
-            bot.send_message(user, message)
+        if k%24==0:
+            start_time2 = time.time()
+            bot.send_message(config.myid, f'{start_time2}')
+            asyncio.run(start2(was_mentions, guest_token))
+            logger.info(f'На выполнение прасинга 2 ушло {time.time() - start_time2}')
+            for nickname in sorted(mentions, key=lambda x: mentions[x], reverse=True)[:10]:
+                try:
+                    message += f'{nickname} {mentions[nickname]}\n'
+                except Exception as e:
+                    logger.info(f'5 {e} {nickname}')
+            for user in config.rassilka:
+                bot.send_message(user, message)
         del mentions, was_mentions
         logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
         logger.info(f'Следующий запуск:{time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(start_time+1800))}')
