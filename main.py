@@ -116,7 +116,7 @@ try:
         for collection in new_collections:
             try:
                 if collection['symbol'] not in was_mentions and collection['twitter']:
-                    was_mentions[collection['symbol']]={"Magic Eden": {"twitter": '@'+collection['twitter'][collection['twitter'].rfind('/')+1:], "floor": 'Just added'}, "mentions": 0, "name": collection['name']}
+                    was_mentions[collection['symbol']]={"Magic Eden": {"twitter": '@'+collection['twitter'][collection['twitter'].rfind('/')+1:], "floor": ['Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added'], "listedCount": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"], "avgPrice24hr": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"]}, "mentions": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"], "name": collection['name']}
             except Exception as e:
                 logger.info(f"6 {collection['symbol']}")
         mentions=copy.deepcopy(was_mentions)
@@ -179,11 +179,11 @@ try:
                 mentions[symbol]['Magic Eden']['floor'].append(format(Magic_Eden['floorPrice']/1000000000,'.2f'))
                 mentions[symbol]['Magic Eden']['listedCount'].append(Magic_Eden['listedCount'])
                 mentions[symbol]['Magic Eden']['avgPrice24hr'].append(format((Magic_Eden.get('avgPrice24hr') if Magic_Eden.get('avgPrice24hr') else 0)/1000000000,'.2f'))
-                if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.17 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 15 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=92.5:
-                    try:
+                try:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.17 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 15 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=92.5:
                         message += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']},\nfloor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']},\nlistedCount {was_mentions[symbol]['Magic Eden'].get('listedCount')}-->{mentions[symbol]['Magic Eden']['listedCount']},\nSold24hr {was_mentions[symbol]['Magic Eden'].get('avgPrice24hr')}-->{mentions[symbol]['Magic Eden']['avgPrice24hr']}\n"
-                    except Exception as e:
-                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                except Exception as e:
+                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                 driver.get(f'https://api-mainnet.magiceden.io/collections/{symbol}?edge_cache=true')
                 webdriver += 1
                 mentions[symbol]['Magic Eden']['image'] = json.loads(driver.find_element("xpath", "//pre").text)['image']
