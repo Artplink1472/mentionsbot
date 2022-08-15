@@ -181,7 +181,7 @@ try:
                 mentions[symbol]['Magic Eden']['avgPrice24hr'].append(format((Magic_Eden.get('avgPrice24hr') if Magic_Eden.get('avgPrice24hr') else 0)/1000000000,'.2f'))
                 try:
                     if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.17 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 15 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=92.5:
-                        message += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions']}-->{mentions[symbol]['mentions']},\nfloor {was_mentions[symbol]['Magic Eden']['floor']}-->{mentions[symbol]['Magic Eden']['floor']},\nlistedCount {was_mentions[symbol]['Magic Eden'].get('listedCount')}-->{mentions[symbol]['Magic Eden']['listedCount']},\nSold24hr {was_mentions[symbol]['Magic Eden'].get('avgPrice24hr')}-->{mentions[symbol]['Magic Eden']['avgPrice24hr']}\n"
+                        message += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['avgPrice24hr'][0]}-->{mentions[symbol]['Magic Eden']['avgPrice24hr'][-1]}\n"
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                 driver.get(f'https://api-mainnet.magiceden.io/collections/{symbol}?edge_cache=true')
@@ -190,7 +190,7 @@ try:
                 webdriver_t += 1
             except Exception as e:
                 logger.info(f'3 {symbol} {e}')
-            mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['avgPrice24hr'],mentions[symbol]['Magic Eden']['mentions']=mentions[symbol]['Magic Eden']['floor'][-24:],mentions[symbol]['Magic Eden']['listedCount'][-24:],mentions[symbol]['Magic Eden']['avgPrice24hr'][-24:],mentions[symbol]['Magic Eden']['mentions'][-24:]
+            mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['avgPrice24hr'],mentions[symbol]['mentions']=mentions[symbol]['Magic Eden']['floor'][-24:],mentions[symbol]['Magic Eden']['listedCount'][-24:],mentions[symbol]['Magic Eden']['avgPrice24hr'][-24:],mentions[symbol]['mentions'][-24:]
         while message:
             send = message[:message[:4096].rfind('\n') + 1]
             message = message[message[:4096].rfind('\n') + 1:]
