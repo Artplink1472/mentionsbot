@@ -111,6 +111,7 @@ try:
     while True:
         start_time=time.time()
         message=''
+        message2='Список 2\n'
         with open('mentions.json', 'r') as f1:
             was_mentions=json.load(f1)
         new_collections=requests.get(f'https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=200').json()
@@ -179,10 +180,15 @@ try:
                 logger.info(f'{symbol} Magic_Eden {webdriver}')
                 mentions[symbol]['Magic Eden']['floor'].append(format(Magic_Eden['floorPrice']/1000000000,'.2f'))
                 mentions[symbol]['Magic Eden']['listedCount'].append(Magic_Eden['listedCount'])
-                mentions[symbol]['Magic Eden']['avgPrice24hr'].append(format((Magic_Eden.get('avgPrice24hr') if Magic_Eden.get('avgPrice24hr') else 0)/1000000000,'.2f'))
+                mentions[symbol]['Magic Eden']['avgPrice24hr'].append(float(format((Magic_Eden.get('avgPrice24hr') if Magic_Eden.get('avgPrice24hr') else 0)/1000000000,'.2f')))
                 try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.17 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 15 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=92.5:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.1 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 10 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.985:
                         message += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['avgPrice24hr'][0]}-->{mentions[symbol]['Magic Eden']['avgPrice24hr'][-1]}\n"
+                except Exception as e:
+                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                try:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 10 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]>=1.015:
+                        message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['avgPrice24hr'][0]}-->{mentions[symbol]['Magic Eden']['avgPrice24hr'][-1]}\n"
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                 driver.get(f'https://api-mainnet.magiceden.io/collections/{symbol}?edge_cache=true')
@@ -195,6 +201,12 @@ try:
         while message:
             send = message[:message[:4096].rfind('\n') + 1]
             message = message[message[:4096].rfind('\n') + 1:]
+            for user in config.rassilka:
+                bot.send_message(user, send)
+                time.sleep(1)
+        while message2:
+            send = message2[:message2[:4096].rfind('\n') + 1]
+            message2 = message2[message2[:4096].rfind('\n') + 1:]
             for user in config.rassilka:
                 bot.send_message(user, send)
                 time.sleep(1)
@@ -215,7 +227,7 @@ try:
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
                     mentions[symbol[0]] = symbol[1]
-        if k%24==0:
+        if k%48==0:
             start_time2 = time.time()
             bot.send_message(config.myid, f'{start_time2}')
             asyncio.run(start2(was_mentions, guest_token))
