@@ -149,6 +149,7 @@ try:
                     options.add_argument("--disable-browser-side-navigation")
                     options.add_argument('--dns-prefetch-disable')
                     options.add_argument("--disable-gpu")
+                    options.page_load_strategy = 'eager'
                     options.add_argument("--disable-infobars")
                     driver = uc.Chrome(options=options, use_subprocess=True)
                     logger.info('new driver created')
@@ -160,6 +161,7 @@ try:
                     options.add_argument("--disable-browser-side-navigation")
                     options.add_argument('--dns-prefetch-disable')
                     options.add_argument("--disable-gpu")
+                    options.page_load_strategy = 'eager'
                     options.add_argument("--disable-infobars")
                     options.add_argument('--proxy-server=http://51.89.191.227:10375')
                     driver2 = uc.Chrome(options=options, use_subprocess=True)
