@@ -112,6 +112,7 @@ try:
         start_time=time.time()
         message=''
         message2='Список 2\n'
+        message3 = 'Список 3\n'
         with open('mentions.json', 'r') as f1:
             was_mentions=json.load(f1)
         new_collections=requests.get(f'https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=200').json()
@@ -193,6 +194,11 @@ try:
                         message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                try:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3:
+                        message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                except Exception as e:
+                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                 driver.get(f'https://api-mainnet.magiceden.io/collections/{symbol}?edge_cache=true')
                 webdriver += 1
                 mentions[symbol]['Magic Eden']['image'] = json.loads(driver.find_element("xpath", "//pre").text)['image']
@@ -209,6 +215,12 @@ try:
         while message2:
             send = message2[:message2[:4096].rfind('\n') + 1]
             message2 = message2[message2[:4096].rfind('\n') + 1:]
+            for user in config.rassilka:
+                bot.send_message(user, send)
+                time.sleep(1)
+        while message3:
+            send = message3[:message3[:4096].rfind('\n') + 1]
+            message3 = message3[message3[:4096].rfind('\n') + 1:]
             for user in config.rassilka:
                 bot.send_message(user, send)
                 time.sleep(1)
