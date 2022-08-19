@@ -209,19 +209,16 @@ try:
             message = message[message[:4096].rfind('\n') + 1:]
             for user in config.rassilka:
                 bot.send_message(user, send)
-                time.sleep(1)
         while message2:
             send = message2[:message2[:4096].rfind('\n') + 1]
             message2 = message2[message2[:4096].rfind('\n') + 1:]
             for user in config.rassilka:
                 bot.send_message(user, send)
-                time.sleep(1)
         while message3:
             send = message3[:message3[:4096].rfind('\n') + 1]
             message3 = message3[message3[:4096].rfind('\n') + 1:]
             for user in config.rassilka:
                 bot.send_message(user, send)
-                time.sleep(1)
         with open('mentions.json', 'w') as f1:
             json.dump(mentions, f1)
         k+=1
