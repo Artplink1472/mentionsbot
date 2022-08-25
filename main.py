@@ -118,6 +118,7 @@ try:
         message=''
         message2='Список 2\n'
         message3 = 'Список 3\n'
+        message4 = 'Список 4\n'
         with open('mentions.json', 'r') as f1:
             was_mentions=json.load(f1)
         new_collections=requests.get(f'https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=200').json()
@@ -232,6 +233,11 @@ try:
         while message3:
             send = message3[:message3[:4096].rfind('\n') + 1]
             message3 = message3[message3[:4096].rfind('\n') + 1:]
+            for user in config.rassilka:
+                bot.send_message(user, send)
+        while message4:
+            send = message4[:message3[:4096].rfind('\n') + 1]
+            message4 = message4[message3[:4096].rfind('\n') + 1:]
             for user in config.rassilka:
                 bot.send_message(user, send)
         with open('mentions.json', 'w') as f1:
