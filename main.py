@@ -195,14 +195,20 @@ try:
                     except Exception as e:
                         logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                     try:
-                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 10 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]>=1.015:
+                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]>=1.03:
                             message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
                             sended_12[-1].add(symbol)
                     except Exception as e:
                         logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                     try:
-                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 40 and mentions[symbol]['Magic Eden']['listedCount'][0] >= 50 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]<was_mentions[symbol]['Magic Eden']['volume24hr'][-1] and was_mentions[symbol]['Magic Eden']['volume24hr'][-1]>=30:
+                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6:
                             message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                            sended_12[-1].add(symbol)
+                    except Exception as e:
+                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                    try:
+                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 40 and mentions[symbol]['Magic Eden']['listedCount'][0] >= 50 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]<was_mentions[symbol]['Magic Eden']['volume24hr'][-1] and was_mentions[symbol]['Magic Eden']['volume24hr'][-1]>=30:
+                            message4 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
                             sended_12[-1].add(symbol)
                     except Exception as e:
                         logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
@@ -230,9 +236,10 @@ try:
                 bot.send_message(user, send)
         with open('mentions.json', 'w') as f1:
             json.dump(mentions, f1)
-        k+=1
         mentions={}
         message = 'Топ 10\n'
+        guest_token=requests.post('https://api.twitter.com/1.1/guest/activate.json',
+                      headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA'}).json()['guest_token']
         async def start2(was_mentions, guest_token):
             timeout = aiohttp.ClientTimeout(total=20)
             app_storage['session'] = aiohttp.ClientSession(timeout=timeout)
@@ -257,6 +264,7 @@ try:
                     logger.info(f'5 {e} {nickname}')
             for user in config.rassilka:
                 bot.send_message(user, message)
+        k+=1
         del mentions, was_mentions
         logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
         logger.info(f'Следующий запуск:{time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(start_time+1800))}')
