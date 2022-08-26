@@ -155,6 +155,7 @@ try:
                     options.add_argument("--disable-dev-shm-usage")
                     options.add_argument('--dns-prefetch-disable')
                     options.add_argument("--disable-gpu")
+                    chrome_options.add_argument('--disable-dev-shm-usage') 
                     options.page_load_strategy = 'none'
                     options.add_argument("--disable-infobars")
                     driver = uc.Chrome(options=options, use_subprocess=True)
@@ -166,6 +167,7 @@ try:
                     options.add_argument("--disable-dev-shm-usage")
                     options.add_argument('--dns-prefetch-disable')
                     options.add_argument("--disable-gpu")
+                    chrome_options.add_argument('--disable-dev-shm-usage')
                     options.page_load_strategy = 'none'
                     options.add_argument("--disable-infobars")
                     options.add_argument('--proxy-server=http://51.89.191.227:10375')
@@ -180,8 +182,8 @@ try:
                     webdriver += 1
                     webdriver_t = 0
                     was_time = time.time()
-                driver.get(f'https://api-mainnet.magiceden.io/rpc/getCollectionEscrowStats/{symbol}?edge_cache=true')
                 webdriver += 1
+                driver.get(f'https://api-mainnet.magiceden.io/rpc/getCollectionEscrowStats/{symbol}?edge_cache=true')
                 Magic_Eden = json.loads(driver.find_element("xpath", "//pre").text)['results']
                 webdriver_t += 1
                 logger.info(f'{symbol} Magic_Eden {webdriver}')
