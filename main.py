@@ -80,18 +80,21 @@ async def twitter_all_mentions(symbol, guest_token):
     return [symbol, mentions_count]
 
 async  def Magic_Eden_stats(symbol, proxy):
-    try:
-        if proxy:
+    if proxy:
+        try:
             async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
                                                             proxy=proxy,
                                                             timeout=10) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
-        else:
+        except Exception as e:
+            logger.info(f'Magic_Eden_stats {e} {symbol} {await mentionsrequest.text()}')
+    else:
+        try:
             async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
                                                             timeout=10) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
-    except Exception as e:
-        logger.info(f'Magic_Eden_stats {e} {symbol} {await mentionsrequest.text()}')
+        except Exception as e:
+            logger.info(f'Magic_Eden_stats {e} {symbol} {await mentionsrequest.text()}')
     try:
         if not Magic_Eden['results'].get('floorPrice'):
             logger.info(f'Magic_Eden_stats {symbol} {Magic_Eden}')
