@@ -19,7 +19,7 @@ logger.setLevel(logging.INFO)
 formatstr = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 formatter = logging.Formatter(formatstr)
 
-fh = logging.FileHandler('/home/tgbot/mentionsbot/log.log')
+fh = logging.FileHandler('/home/tgbot/mentionsbot/log.log', mode='w')
 fh.setLevel(logging.INFO)
 fh.setFormatter(formatter)
 logger.addHandler(fh)
@@ -137,7 +137,7 @@ try:
         start_time2 = time.time()
         bot.send_message(config.myid, f'{start_time2}')
         asyncio.run(start(was_mentions, guest_token))
-        logger.info(f'На выполнение прасинга ушло {time.time() - start_time2}')
+        logger.info(f'На выполнение парсинга ушло {time.time() - start_time2}')
         async def start3(was_mentions):
             timeout = aiohttp.ClientTimeout(total=300)
             app_storage['session'] = aiohttp.ClientSession(timeout=timeout)
@@ -160,7 +160,7 @@ try:
         start_time2 = time.time()
         bot.send_message(config.myid, f'{start_time2}')
         asyncio.run(start3(was_mentions))
-        logger.info(f'На выполнение прасинга 3 ушло {time.time() - start_time2}')
+        logger.info(f'На выполнение парсинга 3 ушло {time.time() - start_time2}')
         for symbol in was_mentions:
             if symbol not in sended_all:
                 try:
@@ -230,7 +230,7 @@ try:
             start_time2 = time.time()
             bot.send_message(config.myid, f'{start_time2}')
             asyncio.run(start2(was_mentions, guest_token))
-            logger.info(f'На выполнение прасинга 2 ушло {time.time() - start_time2}')
+            logger.info(f'На выполнение парсинга 2 ушло {time.time() - start_time2}')
             for nickname in sorted(mentions, key=lambda x: mentions[x], reverse=True)[:10]:
                 try:
                     message += f'{nickname} {mentions[nickname]}\n'
