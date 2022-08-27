@@ -92,7 +92,9 @@ async  def Magic_Eden_stats(symbol, proxy):
                 Magic_Eden=await mentionsrequest.json(content_type=None)
     except Exception as e:
         logger.info(f'Magic_Eden_stats {e} {symbol}')
-    return [symbol,Magic_Eden['results']['floorPrice'],Magic_Eden['results']['listedCount'],(Magic_Eden['results'].get('volume24hr') if Magic_Eden['results'].get('volume24hr') else 0)]
+    if not Magic_Eden['results'].get('floorPrice'):
+        logger.info(f'Magic_Eden_stats {symbol} {Magic_Eden}')
+    return [symbol,(Magic_Eden['results'].get('floorPrice') if Magic_Eden['results'].get('floorPrice') else 0),(Magic_Eden['results'].get('listedCount') if Magic_Eden['results'].get('listedCount') else 0),(Magic_Eden['results'].get('volume24hr') if Magic_Eden['results'].get('volume24hr') else 0)]
 
 app_storage={}
 try:
