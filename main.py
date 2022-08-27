@@ -91,8 +91,8 @@ async  def Magic_Eden_stats(symbol, proxy):
                                                             timeout=10) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
     except Exception as e:
-        logger.info(f'Magic_Eden_stats {e} {symbol}')
-    return [symbol,Magic_Eden['floorPrice'],Magic_Eden['listedCount'],(Magic_Eden.get('volume24hr') if Magic_Eden.get('volume24hr') else 0)]
+        logger.info(f'Magic_Eden_stats {e} {symbol} {mentionsrequest.text}')
+    return [symbol,Magic_Eden['results']['floorPrice'],Magic_Eden['results']['listedCount'],(Magic_Eden['results'].get('volume24hr') if Magic_Eden['results'].get('volume24hr') else 0)]
 
 app_storage={}
 try:
