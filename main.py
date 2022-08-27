@@ -80,21 +80,18 @@ async def twitter_all_mentions(symbol, guest_token):
     return [symbol, mentions_count]
 
 async  def Magic_Eden_stats(symbol, proxy):
-    if proxy:
-        try:
+    try:
+        if proxy:
             async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
                                                             proxy=proxy,
                                                             timeout=10) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
-        except Exception as e:
-            logger.info(f'Magic_Eden_stats {e} {symbol} {await mentionsrequest.text()}')
-    else:
-        try:
+        else:
             async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
                                                             timeout=10) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
-        except Exception as e:
-            logger.info(f'Magic_Eden_stats {e} {symbol} {await mentionsrequest.text()}')
+    except Exception as e:
+        logger.info(f'Magic_Eden_stats {e} {symbol}')
     try:
         if not Magic_Eden['results'].get('floorPrice'):
             logger.info(f'Magic_Eden_stats {symbol} {Magic_Eden}')
@@ -157,7 +154,7 @@ try:
                     else:
                         tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,'http://51.89.191.227:10375')))
                     if q%240==0:
-                        await asyncio.sleep(60)
+                        await asyncio.sleep(61)
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
                     mentions[symbol[0]]['Magic Eden']['floor'].append(float(format(symbol[1]/1000000000,'.2f')))
