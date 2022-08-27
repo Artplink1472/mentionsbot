@@ -6,7 +6,6 @@ import requests
 import json
 import logging
 import copy
-import undetected_chromedriver as uc
 import asyncio
 import aiohttp
 import yarl
@@ -80,33 +79,25 @@ async def twitter_all_mentions(symbol, guest_token):
     logger.info(f"{symbol} {mentions_count}")
     return [symbol, mentions_count]
 
+async  def Magic_Eden_stats(symbol, proxy):
+    try:
+        if proxy:
+            async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
+                                                            proxy=proxy,
+                                                            timeout=10) as mentionsrequest:
+                Magic_Eden=await mentionsrequest.json(content_type=None)
+        else:
+            async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
+                                                            timeout=10) as mentionsrequest:
+                Magic_Eden=await mentionsrequest.json(content_type=None)
+    except Exception as e:
+        logger.info(f'Magic_Eden_stats {e} {symbol}')
+    return [symbol,Magic_Eden['floorPrice'],Magic_Eden['listedCount'],(Magic_Eden.get('volume24hr') if Magic_Eden.get('volume24hr') else 0)]
+
 app_storage={}
 try:
     sended_12=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
     k=0
-    options = uc.ChromeOptions()
-    options.add_argument("start-maximized")
-    options.add_argument("enable-automation")
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-browser-side-navigation")
-    options.add_argument('--dns-prefetch-disable')
-    options.add_argument("--disable-gpu")
-    options.add_argument("--disable-infobars")
-    driver = uc.Chrome(options=options, use_subprocess=True)
-    options = uc.ChromeOptions()
-    options.add_argument("start-maximized")
-    options.add_argument("enable-automation")
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-browser-side-navigation")
-    options.add_argument('--dns-prefetch-disable')
-    options.add_argument("--disable-gpu")
-    options.add_argument("--disable-infobars")
-    driver2 = uc.Chrome(options=options, use_subprocess=True)
-    webdriver=1
     f=0
     month={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
     while True:
@@ -125,7 +116,7 @@ try:
         for collection in new_collections:
             try:
                 if collection['symbol'] not in was_mentions and collection['twitter']:
-                    was_mentions[collection['symbol']]={"Magic Eden": {"twitter": '@'+collection['twitter'][collection['twitter'].rfind('/')+1:], "floor": ['Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added'], "listedCount": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"], "volume24hr": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"]}, "mentions": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"], "name": collection['name']}
+                    was_mentions[collection['symbol']]={"Magic Eden": {"twitter": '@'+collection['twitter'][collection['twitter'].rfind('/')+1:], "floor": ['Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added','Just added'], "listedCount": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"], "volume24hr": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"], "image": collection.get('image')}, "mentions": ["Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added", "Just added"], "name": collection['name']}
             except Exception as e:
                 bot.send_message(config.myid, f'{e} {collection}')
         mentions=copy.deepcopy(was_mentions)
@@ -145,82 +136,55 @@ try:
         bot.send_message(config.myid, f'{start_time2}')
         asyncio.run(start(was_mentions, guest_token))
         logger.info(f'На выполнение прасинга ушло {time.time() - start_time2}')
+        async def start3(was_mentions):
+            timeout = aiohttp.ClientTimeout(total=20)
+            app_storage['session'] = aiohttp.ClientSession(timeout=timeout)
+            q=0
+            async with app_storage['session']:
+                tasks = []
+                for symbol in was_mentions:
+                    q+=1
+                    if q%2:
+                        tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,False)))
+                    else:
+                        tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,'http://51.89.191.227:10375')))
+                    if q==240:
+                        await asyncio.sleep(60)
+                results = await asyncio.gather(*tasks)
+                for symbol in results:
+                    mentions[symbol[0]]['Magic Eden']['floor'].append(float(format(symbol[1]/1000000000,'.2f')))
+                    mentions[symbol[0]]['Magic Eden']['listedCount'].append(symbol[2])
+                    mentions[symbol[0]]['Magic Eden']['volume24hr'].append(float(format(symbol[3]/1000000000,'.2f')))
+        start_time2 = time.time()
+        bot.send_message(config.myid, f'{start_time2}')
+        asyncio.run(start3(was_mentions))
+        logger.info(f'На выполнение прасинга 3 ушло {time.time() - start_time2}')
         for symbol in was_mentions:
-            try:
-                if webdriver%850==0 or webdriver%850==1:
-                    driver.quit()
-                    logger.info('quited')
-                    options = uc.ChromeOptions()
-                    options.add_argument("--headless")
-                    options.add_argument("--disable-dev-shm-usage")
-                    options.add_argument('--dns-prefetch-disable')
-                    options.add_argument("--disable-gpu")
-                    chrome_options.add_argument('--disable-dev-shm-usage') 
-                    options.page_load_strategy = 'none'
-                    options.add_argument("--disable-infobars")
-                    driver = uc.Chrome(options=options, use_subprocess=True)
-                    logger.info('new driver created')
-                    driver2.quit()
-                    logger.info('quited')
-                    options = uc.ChromeOptions()
-                    options.add_argument("--headless")
-                    options.add_argument("--disable-dev-shm-usage")
-                    options.add_argument('--dns-prefetch-disable')
-                    options.add_argument("--disable-gpu")
-                    chrome_options.add_argument('--disable-dev-shm-usage')
-                    options.page_load_strategy = 'none'
-                    options.add_argument("--disable-infobars")
-                    options.add_argument('--proxy-server=http://51.89.191.227:10375')
-                    driver2 = uc.Chrome(options=options, use_subprocess=True)
-                    logger.info('new driver created')
-                    webdriver = 1
-                    webdriver_t = 0
-                    was_time = time.time()
-                if webdriver % 60 == 0 or webdriver % 60 == 1:
-                    driver, driver2 = driver2, driver
-                    logger.info(f'{webdriver} {webdriver_t} {time.time() - was_time}')
-                    webdriver += 1
-                    webdriver_t = 0
-                    was_time = time.time()
-                webdriver += 1
-                driver.get(f'https://api-mainnet.magiceden.io/rpc/getCollectionEscrowStats/{symbol}?edge_cache=true')
-                Magic_Eden = json.loads(driver.find_element("xpath", "//pre").text)['results']
-                webdriver_t += 1
-                logger.info(f'{symbol} Magic_Eden {webdriver}')
-                mentions[symbol]['Magic Eden']['floor'].append(float(format(Magic_Eden['floorPrice']/1000000000,'.2f')))
-                mentions[symbol]['Magic Eden']['listedCount'].append(Magic_Eden['listedCount'])
-                mentions[symbol]['Magic Eden']['volume24hr'].append(float(format((Magic_Eden.get('volume24hr') if Magic_Eden.get('volume24hr') else 0)/1000000000,'.2f')))
-                if symbol not in sended_all:
-                    try:
-                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.1 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 10 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.985:
-                            message += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
-                            sended_12[-1].add(symbol)
-                    except Exception as e:
-                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
-                    try:
-                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.75 and mentions[symbol]['mentions'][0] >= 10:
-                            message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
-                            sended_12[-1].add(symbol)
-                    except Exception as e:
-                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
-                    try:
-                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6:
-                            message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
-                            sended_12[-1].add(symbol)
-                    except Exception as e:
-                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
-                    try:
-                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 40 and mentions[symbol]['Magic Eden']['listedCount'][0] >= 50 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]<was_mentions[symbol]['Magic Eden']['volume24hr'][-1] and was_mentions[symbol]['Magic Eden']['volume24hr'][-1]>=30:
-                            message4 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
-                            sended_12[-1].add(symbol)
-                    except Exception as e:
-                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
-                driver.get(f'https://api-mainnet.magiceden.io/collections/{symbol}?edge_cache=true')
-                webdriver += 1
-                mentions[symbol]['Magic Eden']['image'] = json.loads(driver.find_element("xpath", "//pre").text)['image']
-                webdriver_t += 1
-            except Exception as e:
-                logger.info(f'3 {symbol} {e}')
+            if symbol not in sended_all:
+                try:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.1 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 10 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.985:
+                        message += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                        sended_12[-1].add(symbol)
+                except Exception as e:
+                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                try:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.75 and mentions[symbol]['mentions'][0] >= 10:
+                        message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                        sended_12[-1].add(symbol)
+                except Exception as e:
+                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                try:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6:
+                        message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                        sended_12[-1].add(symbol)
+                except Exception as e:
+                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                try:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 40 and mentions[symbol]['Magic Eden']['listedCount'][0] >= 50 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]<was_mentions[symbol]['Magic Eden']['volume24hr'][-1] and was_mentions[symbol]['Magic Eden']['volume24hr'][-1]>=30:
+                        message4 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                        sended_12[-1].add(symbol)
+                except Exception as e:
+                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
             mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['volume24hr'],mentions[symbol]['mentions'],sended_12=mentions[symbol]['Magic Eden']['floor'][-24:],mentions[symbol]['Magic Eden']['listedCount'][-24:],mentions[symbol]['Magic Eden']['volume24hr'][-24:],mentions[symbol]['mentions'][-24:],sended_12[-24:]
         while message:
             send = message[:message[:4096].rfind('\n') + 1]
