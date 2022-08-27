@@ -153,7 +153,7 @@ try:
                         tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,False)))
                     else:
                         tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,'http://51.89.191.227:10375')))
-                    if q==240:
+                    if q%240==0:
                         await asyncio.sleep(60)
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
