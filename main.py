@@ -125,7 +125,7 @@ try:
         guest_token=requests.post('https://api.twitter.com/1.1/guest/activate.json',
                       headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA'}).json()['guest_token']
         async def start(was_mentions, guest_token):
-            timeout = aiohttp.ClientTimeout(total=20)
+            timeout = aiohttp.ClientTimeout(total=300)
             app_storage['session'] = aiohttp.ClientSession(timeout=timeout)
             async with app_storage['session']:
                 tasks = []
@@ -139,7 +139,7 @@ try:
         asyncio.run(start(was_mentions, guest_token))
         logger.info(f'На выполнение прасинга ушло {time.time() - start_time2}')
         async def start3(was_mentions):
-            timeout = aiohttp.ClientTimeout(total=20)
+            timeout = aiohttp.ClientTimeout(total=300)
             app_storage['session'] = aiohttp.ClientSession(timeout=timeout)
             q=0
             async with app_storage['session']:
@@ -215,7 +215,7 @@ try:
         guest_token=requests.post('https://api.twitter.com/1.1/guest/activate.json',
                       headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA'}).json()['guest_token']
         async def start2(was_mentions, guest_token):
-            timeout = aiohttp.ClientTimeout(total=20)
+            timeout = aiohttp.ClientTimeout(total=300)
             app_storage['session'] = aiohttp.ClientSession(timeout=timeout)
             async with app_storage['session']:
                 tasks = []
