@@ -31,7 +31,7 @@ async def twitter_mentions(symbol, guest_token):
     try:
         async with app_storage['session'].get(yarl.URL(f"https://twitter.com/i/api/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&include_ext_has_nft_avatar=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&include_ext_sensitive_media_warning=true&include_ext_trusted_friends_metadata=true&send_error_codes=true&simple_quoted_tweet=true&q=({quote(was_mentions[symbol]['Magic Eden']['twitter'])})%20-filter%3Areplies&tweet_search_mode=live&count=100&query_source=typed_query&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel%2ChasNftAvatar%2CvoiceInfo%2Cenrichments%2CsuperFollowMetadata%2CunmentionInfo", encoded=True),
                                                         headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA','x-guest-token': guest_token},
-                                                        timeout=10) as mentionsrequest:
+                                                        timeout=20) as mentionsrequest:
             mentionsresponse=await mentionsrequest.json(content_type=None)
             this_mentions_count=len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400, mentionsresponse['globalObjects']['tweets'])))
             mentions_count+=this_mentions_count
@@ -40,7 +40,7 @@ async def twitter_mentions(symbol, guest_token):
             try:
                 async with  app_storage['session'].get(yarl.URL(f"https://twitter.com/i/api/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&include_ext_has_nft_avatar=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&include_ext_sensitive_media_warning=true&include_ext_trusted_friends_metadata=true&send_error_codes=true&simple_quoted_tweet=true&q=({quote(was_mentions[symbol]['Magic Eden']['twitter'])})%20-filter%3Areplies&tweet_search_mode=live&count=100&query_source=typed_query&cursor={quote(cursor)}&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel%2ChasNftAvatar%2CvoiceInfo%2Cenrichments%2CsuperFollowMetadata%2CunmentionInfo", encoded=True),
                                                     headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA','x-guest-token': guest_token},
-                                                    timeout=10) as mentionsrequest:
+                                                    timeout=20) as mentionsrequest:
                     mentionsresponse=await mentionsrequest.json(content_type=None)
                     this_mentions_count=len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400, mentionsresponse['globalObjects']['tweets'])))
                     mentions_count+=this_mentions_count
@@ -57,7 +57,7 @@ async def twitter_all_mentions(symbol, guest_token):
     try:
         async with app_storage['session'].get(yarl.URL(f'https://twitter.com/i/api/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&include_ext_has_nft_avatar=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&include_ext_sensitive_media_warning=true&include_ext_trusted_friends_metadata=true&send_error_codes=true&simple_quoted_tweet=true&q=({quote(symbol)})&tweet_search_mode=live&count=100&query_source=typed_query&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel%2ChasNftAvatar%2CvoiceInfo%2Cenrichments%2CsuperFollowMetadata%2CunmentionInfo', encoded=True),
                                                         headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA','x-guest-token': guest_token},
-                                                        timeout=10) as mentionsrequest:
+                                                        timeout=20) as mentionsrequest:
             mentionsresponse = await mentionsrequest.json(content_type=None)
             mentions_count+=len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400 and symbol.lower() in mentionsresponse['globalObjects']['tweets'][x]['full_text'][mentionsresponse['globalObjects']['tweets'][x]['display_text_range'][0]:].lower(), mentionsresponse['globalObjects']['tweets'])))
             cursor=mentionsresponse['timeline']['instructions'][0]['addEntries']['entries'][-1]['content']['operation']['cursor']['value']
@@ -66,7 +66,7 @@ async def twitter_all_mentions(symbol, guest_token):
                 try:
                     async with app_storage['session'].get(yarl.URL(f'https://twitter.com/i/api/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&include_ext_has_nft_avatar=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&include_ext_sensitive_media_warning=true&include_ext_trusted_friends_metadata=true&send_error_codes=true&simple_quoted_tweet=true&q=({quote(symbol)})&tweet_search_mode=live&count=100&query_source=recent_search_click&cursor={quote(cursor)}&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel%2ChasNftAvatar%2CvoiceInfo%2Cenrichments%2CsuperFollowMetadata%2CunmentionInfo', encoded=True),
                                                         headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA','x-guest-token': guest_token},
-                                                        timeout=10) as mentionsrequest:
+                                                        timeout=20) as mentionsrequest:
                         mentionsresponse = await mentionsrequest.json(content_type=None)
                         mentions_count+=len(list(filter(lambda x: time.mktime(time.gmtime())-time.mktime(time.strptime(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:].replace(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:7],month.get(mentionsresponse['globalObjects']['tweets'][x]['created_at'][4:7])),"%m %d %H:%M:%S +0000 %Y"))<=86400 and symbol.lower() in mentionsresponse['globalObjects']['tweets'][x]['full_text'][mentionsresponse['globalObjects']['tweets'][x]['display_text_range'][0]:].lower(), mentionsresponse['globalObjects']['tweets'])))
                         cursor=mentionsresponse['timeline']['instructions'][-1]['replaceEntry']['entry']['content']['operation']['cursor']['value']
@@ -85,11 +85,11 @@ async  def Magic_Eden_stats(symbol, proxy):
         if proxy:
             async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
                                                             proxy=proxy,
-                                                            timeout=10) as mentionsrequest:
+                                                            timeout=20) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
         else:
             async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
-                                                            timeout=10) as mentionsrequest:
+                                                            timeout=20) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
     except Exception as e:
         logger.info(f'Magic_Eden_stats {e} {symbol}')
@@ -150,7 +150,7 @@ try:
                         tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,False)))
                     else:
                         tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,'http://51.89.191.227:10375')))
-                    if q%238==0:
+                    if q%234==0:
                         await asyncio.sleep(61)
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
@@ -170,7 +170,7 @@ try:
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                 try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.75 and mentions[symbol]['mentions'][0] >= 10:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.75 and mentions[symbol]['mentions'][0] >= 10 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
                         message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
                         sended_12[-1].add(symbol)
                 except Exception as e:
@@ -226,6 +226,7 @@ try:
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
                     mentions[symbol[0]] = symbol[1]
+        k+=1
         if k%48==0:
             start_time2 = time.time()
             bot.send_message(config.myid, f'{start_time2}')
@@ -238,7 +239,6 @@ try:
                     logger.info(f'5 {e} {nickname}')
             for user in config.rassilka:
                 bot.send_message(user, message)
-        k+=1
         del mentions, was_mentions
         logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
         logger.info(f'Следующий запуск:{time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(start_time+1800))}')
