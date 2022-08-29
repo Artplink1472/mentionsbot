@@ -80,21 +80,22 @@ async def twitter_all_mentions(symbol, guest_token):
     return [symbol, mentions_count]
 
 async  def Magic_Eden_stats(symbol, proxy):
-    Magic_Eden={'results': {}}
+    floorPrice,listedCount,volume24hr=0,0,0
     try:
         if proxy:
             async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
                                                             proxy=proxy,
                                                             timeout=20) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
+                floorPrice,listedCount,volume24hr=Magic_Eden['results']['floorPrice'],Magic_Eden['results']['listedCount'],(Magic_Eden['results'].get('volume24hr') if Magic_Eden['results'].get('volume24hr') else 0)
         else:
             async with app_storage['session'].get(yarl.URL(f"https://api-mainnet.magiceden.dev/rpc/getCollectionEscrowStats/{symbol}", encoded=True),
                                                             timeout=20) as mentionsrequest:
                 Magic_Eden=await mentionsrequest.json(content_type=None)
+                floorPrice,listedCount,volume24hr=Magic_Eden['results']['floorPrice'],Magic_Eden['results']['listedCount'],(Magic_Eden['results'].get('volume24hr') if Magic_Eden['results'].get('volume24hr') else 0)
     except Exception as e:
         logger.info(f'Magic_Eden_stats {e} {symbol}')
-    floorPrice,listedCount,volume24hr=Magic_Eden.get('results').get('floorPrice'),Magic_Eden.get('results').get('listedCount'),Magic_Eden.get('results').get('volume24hr')
-    return [symbol,(floorPrice if floorPrice else 0),(listedCount if listedCount else 0),(volume24hr if volume24hr else 0)]
+    return [symbol,floorPrice,listedCount,volume24hr]
 
 app_storage={}
 try:
@@ -109,9 +110,8 @@ try:
             sended_all.update(i)
         start_time=time.time()
         message=''
-        message2='Список 2\n'
-        message3 = 'Список 3\n'
-        message4 = 'Список 4\n'
+        message2=''
+        message3 = ''
         with open('mentions.json', 'r') as f1:
             was_mentions=json.load(f1)
         new_collections=requests.get(f'https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=200').json()
@@ -181,33 +181,26 @@ try:
                         sended_12[-1].add(symbol)
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
-                try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (was_mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 40 and mentions[symbol]['Magic Eden']['listedCount'][0] >= 50 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]<was_mentions[symbol]['Magic Eden']['volume24hr'][-1] and was_mentions[symbol]['Magic Eden']['volume24hr'][-1]>=30:
-                        message4 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
-                        sended_12[-1].add(symbol)
-                except Exception as e:
-                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
             mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['volume24hr'],mentions[symbol]['mentions'],sended_12=mentions[symbol]['Magic Eden']['floor'][-24:],mentions[symbol]['Magic Eden']['listedCount'][-24:],mentions[symbol]['Magic Eden']['volume24hr'][-24:],mentions[symbol]['mentions'][-24:],sended_12[-24:]
         while message:
             send = message[:message[:4096].rfind('\n') + 1]
             message = message[message[:4096].rfind('\n') + 1:]
             for user in config.rassilka:
                 bot.send_message(user, send)
-        while message2:
-            send = message2[:message2[:4096].rfind('\n') + 1]
-            message2 = message2[message2[:4096].rfind('\n') + 1:]
-            for user in config.rassilka:
-                bot.send_message(user, send)
-        while message3:
-            send = message3[:message3[:4096].rfind('\n') + 1]
-            message3 = message3[message3[:4096].rfind('\n') + 1:]
-            for user in config.rassilka:
-                bot.send_message(user, send)
-        while message4:
-            send = message4[:message4[:4096].rfind('\n') + 1]
-            message4 = message4[message4[:4096].rfind('\n') + 1:]
-            for user in config.rassilka:
-                bot.send_message(user, send)
+        if message2:
+            message2+='Список 2\n'
+            while message2:
+                send = message2[:message2[:4096].rfind('\n') + 1]
+                message2 = message2[message2[:4096].rfind('\n') + 1:]
+                for user in config.rassilka:
+                    bot.send_message(user, send)
+        if message3:
+            message3+='Список 3\n'
+            while message3:
+                send = message3[:message3[:4096].rfind('\n') + 1]
+                message3 = message3[message3[:4096].rfind('\n') + 1:]
+                for user in config.rassilka:
+                    bot.send_message(user, send)
         with open('mentions.json', 'w') as f1:
             json.dump(mentions, f1)
         mentions={}
@@ -226,7 +219,6 @@ try:
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
                     mentions[symbol[0]] = symbol[1]
-        k+=1
         if k%48==0:
             start_time2 = time.time()
             bot.send_message(config.myid, f'{start_time2}')
@@ -239,6 +231,7 @@ try:
                     logger.info(f'5 {e} {nickname}')
             for user in config.rassilka:
                 bot.send_message(user, message)
+        k+=1
         del mentions, was_mentions
         logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
         logger.info(f'Следующий запуск:{time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(start_time+1800))}')
