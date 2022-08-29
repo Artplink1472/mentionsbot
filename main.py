@@ -93,7 +93,7 @@ async  def Magic_Eden_stats(symbol, proxy):
                 Magic_Eden=await mentionsrequest.json(content_type=None)
     except Exception as e:
         logger.info(f'Magic_Eden_stats {e} {symbol}')
-    floorPrice,listedCount,volume24hr=Magic_Eden['results'].get('floorPrice'),Magic_Eden['results'].get('listedCount'),Magic_Eden['results'].get('volume24hr')
+    floorPrice,listedCount,volume24hr=Magic_Eden.get('results').get('floorPrice'),Magic_Eden.get('results').get('listedCount'),Magic_Eden.get('results').get('volume24hr')
     return [symbol,(floorPrice if floorPrice else 0),(listedCount if listedCount else 0),(volume24hr if volume24hr else 0)]
 
 app_storage={}
@@ -170,7 +170,7 @@ try:
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                 try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.75 and mentions[symbol]['mentions'][0] >= 10 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and 0<mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.75 and mentions[symbol]['mentions'][0] >= 10 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
                         message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
                         sended_12[-1].add(symbol)
                 except Exception as e:
