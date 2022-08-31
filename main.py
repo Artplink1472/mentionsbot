@@ -11,6 +11,7 @@ import aiohttp
 import yarl
 from aiohttp.helpers import quote
 bot = telebot.TeleBot(config.token_bot)
+bot2 = telebot.TeleBot(config.token_bot2)
 
 bot.send_message(config.myid, '✅ Бот запущен')
 
@@ -195,12 +196,12 @@ try:
                 for user in config.rassilka:
                     bot.send_message(user, send)
         if message3:
-            message3='Список 3\n'+message3
+            message3='Pump\n'+message3
             while message3:
                 send = message3[:message3[:4096].rfind('\n') + 1]
                 message3 = message3[message3[:4096].rfind('\n') + 1:]
                 for user in config.rassilka:
-                    bot.send_message(user, send)
+                    bot2.send_message(user, send)
         with open('mentions.json', 'w') as f1:
             json.dump(mentions, f1)
         mentions={}
@@ -219,7 +220,6 @@ try:
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
                     mentions[symbol[0]] = symbol[1]
-        k+=1
         if k%48==0:
             start_time2 = time.time()
             bot.send_message(config.myid, f'{start_time2}')
@@ -232,6 +232,7 @@ try:
                     logger.info(f'5 {e} {nickname}')
             for user in config.rassilka:
                 bot.send_message(user, message)
+        k+=1
         del mentions, was_mentions
         logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
         logger.info(f'Следующий запуск:{time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(start_time+1800))}')
