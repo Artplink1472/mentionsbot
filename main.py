@@ -101,7 +101,7 @@ async  def Magic_Eden_stats(symbol, proxy):
 app_storage={}
 try:
     sended_12=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    k=0
+    k=3
     f=0
     month={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
     while True:
@@ -207,7 +207,7 @@ try:
                 send = message3[:message3[:4096].rfind('\n') + 1]
                 message3 = message3[message3[:4096].rfind('\n') + 1:]
                 for user in config.rassilka:
-                    bot2.send_message(user, send)
+                    bot.send_message(user, send)
         with open('mentions.json', 'w') as f1:
             json.dump(mentions, f1)
         mentions={}
@@ -226,7 +226,6 @@ try:
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
                     mentions[symbol[0]] = symbol[1]
-        k+=1
         if k%48==0:
             start_time2 = time.time()
             bot.send_message(config.myid, f'{start_time2}')
@@ -239,6 +238,7 @@ try:
                     logger.info(f'5 {e} {nickname}')
             for user in config.rassilka:
                 bot.send_message(user, message)
+        k+=1
         del mentions, was_mentions
         logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
         logger.info(f'Следующий запуск:{time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(start_time+1800))}')
