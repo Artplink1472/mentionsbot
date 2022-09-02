@@ -177,7 +177,7 @@ try:
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                 try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and mentions[symbol]['Magic Eden']['volume24hr'][0]>=50 and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.2 and mentions[symbol]['Magic Eden']['listedCount'][-1]<mentions[symbol]['Magic Eden']['listedCount'][0] and mentions[symbol]['Magic Eden']['volume24hr'][-1]>mentions[symbol]['Magic Eden']['volume24hr'][0]:
                         message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
                         sended_12[-1].add(symbol)
                 except Exception as e:
@@ -196,7 +196,13 @@ try:
                 for user in config.rassilka:
                     bot.send_message(user, send)
         if message3:
-            message3='Pump\n'+message3
+            Pump='Pump\n'+message3
+            while Pump:
+                send = Pump[:Pump[:4096].rfind('\n') + 1]
+                Pump = Pump[Pump[:4096].rfind('\n') + 1:]
+                for user in config.rassilka:
+                    bot2.send_message(user, send)
+            message3='Список 3\n'+message3
             while message3:
                 send = message3[:message3[:4096].rfind('\n') + 1]
                 message3 = message3[message3[:4096].rfind('\n') + 1:]
