@@ -101,7 +101,7 @@ async  def Magic_Eden_stats(symbol, proxy):
 app_storage={}
 try:
     sended_12=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    k=3
+    k=1
     f=0
     month={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
     while True:
@@ -177,7 +177,7 @@ try:
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
                 try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and mentions[symbol]['Magic Eden']['volume24hr'][0]>=50 and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.2 and mentions[symbol]['Magic Eden']['listedCount'][-1]<mentions[symbol]['Magic Eden']['listedCount'][0] and mentions[symbol]['Magic Eden']['volume24hr'][-1]>mentions[symbol]['Magic Eden']['volume24hr'][0]:
+                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and mentions[symbol]['Magic Eden']['volume24hr'][0]>=50 and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.2 and mentions[symbol]['Magic Eden']['listedCount'][-1]<mentions[symbol]['Magic Eden']['listedCount'][0] and mentions[symbol]['Magic Eden']['volume24hr'][-1]-mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
                         message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
                         sended_12[-1].add(symbol)
                 except Exception as e:
