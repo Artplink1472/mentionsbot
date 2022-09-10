@@ -186,14 +186,14 @@ try:
         while message:
             send = message[:message[:4096].rfind('\n') + 1]
             message = message[message[:4096].rfind('\n') + 1:]
-            for user in config.rassilka[:-1]:
+            for user in config.rassilka[:-2]:
                 bot.send_message(user, send)
         if message2:
             message2='Список 2\n'+message2
             while message2:
                 send = message2[:message2[:4096].rfind('\n') + 1]
                 message2 = message2[message2[:4096].rfind('\n') + 1:]
-                for user in config.rassilka[:-1]:
+                for user in config.rassilka[:-2]:
                     bot.send_message(user, send)
         if message3:
             Pump='Pump\n'+message3
@@ -206,7 +206,7 @@ try:
             while message3:
                 send = message3[:message3[:4096].rfind('\n') + 1]
                 message3 = message3[message3[:4096].rfind('\n') + 1:]
-                for user in config.rassilka[:-1]:
+                for user in config.rassilka[:-2]:
                     bot.send_message(user, send)
         with open('mentions.json', 'w') as f1:
             json.dump(mentions, f1)
