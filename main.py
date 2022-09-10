@@ -200,7 +200,7 @@ try:
             while Pump:
                 send = Pump[:Pump[:4096].rfind('\n') + 1]
                 Pump = Pump[Pump[:4096].rfind('\n') + 1:]
-                for user in config.rassilka:
+                for user in config.rassilka[:-1]:
                     bot2.send_message(user, send)
             message3='Список 3\n'+message3
             while message3:
