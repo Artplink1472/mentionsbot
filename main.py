@@ -236,7 +236,7 @@ try:
                     message += f'{nickname} {mentions[nickname]}\n'
                 except Exception as e:
                     logger.info(f'5 {e} {nickname}')
-            for user in config.rassilka:
+            for user in config.rassilka[:-2]:
                 bot.send_message(user, message)
         k+=1
         del mentions, was_mentions
