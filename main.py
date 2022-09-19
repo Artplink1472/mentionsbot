@@ -101,7 +101,7 @@ async  def Magic_Eden_stats(symbol, proxy):
 app_storage={}
 try:
     sended_12=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    k=1
+    k=0
     f=0
     month={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
     while True:
@@ -163,6 +163,7 @@ try:
         asyncio.run(start3(was_mentions))
         logger.info(f'На выполнение парсинга 3 ушло {time.time() - start_time2}')
         for symbol in was_mentions:
+            mentions[symbol]["Magic Eden"]['max_floor']=max(mentions[symbol]["Magic Eden"]['max_floor'],mentions[symbol]['Magic Eden']['floor'][-1])
             if symbol not in sended_all:
                 try:
                     if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.1 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 10 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.985:
@@ -180,6 +181,7 @@ try:
                     if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and mentions[symbol]['Magic Eden']['volume24hr'][0]>=50 and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.2 and mentions[symbol]['Magic Eden']['listedCount'][-1]<mentions[symbol]['Magic Eden']['listedCount'][0] and mentions[symbol]['Magic Eden']['volume24hr'][-1]-mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
                         message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
                         sended_12[-1].add(symbol)
+                        mentions[symbol]["Magic Eden"]['min_pump_floor']=min(mentions[symbol]["Magic Eden"]['min_pump_floor'],mentions[symbol]['Magic Eden']['floor'][-1])
                 except Exception as e:
                     logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
             mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['volume24hr'],mentions[symbol]['mentions'],sended_12=mentions[symbol]['Magic Eden']['floor'][-24:],mentions[symbol]['Magic Eden']['listedCount'][-24:],mentions[symbol]['Magic Eden']['volume24hr'][-24:],mentions[symbol]['mentions'][-24:],sended_12[-24:]
@@ -250,9 +252,24 @@ try:
                     logger.info(f'5 {e} {nickname}')
             for user in config.rassilka:
                 try:
-                    bot.send_message(user, send)
+                    bot.send_message(user, message)
                 except:
                     pass
+        if k%336==0:
+            message='Итоги недели:\n'
+            for symbol in mentions:
+                if mentions[symbol]["Magic Eden"]['min_pump_floor']!=99999999:
+                    message+=f"{symbol}: call price - {mentions[symbol]["Magic Eden"]['min_pump_floor']}, max price - {mentions[symbol]["Magic Eden"]['max_floor']}"
+                was_mentions[symbol]["Magic Eden"]['min_pump_floor']=99999999
+                was_mentions[symbol]["Magic Eden"]['max_floor']=0
+            while message:
+                send = message[:message[:4096].rfind('\n') + 1]
+                message = message[message[:4096].rfind('\n') + 1:]
+                for user in config.pumprassilka:
+                    try:
+                        bot2.send_message(user, send)
+                    except:
+                        pass
         k+=1
         del mentions, was_mentions
         logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
