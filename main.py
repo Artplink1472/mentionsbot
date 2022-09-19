@@ -224,6 +224,7 @@ try:
                         pass
         with open('mentions.json', 'w') as f1:
             json.dump(mentions, f1)
+        was_mentions=mentions
         mentions={}
         message = 'Топ 10\n'
         guest_token=requests.post('https://api.twitter.com/1.1/guest/activate.json',
@@ -257,9 +258,9 @@ try:
                     pass
         if k%336==0:
             message='Итоги недели:\n'
-            for symbol in mentions:
-                if mentions[symbol]["Magic Eden"]['min_pump_floor']<99999999:
-                    message+=f"{symbol}: call price - {mentions[symbol]['Magic Eden']['min_pump_floor']}, max price - {mentions[symbol]['Magic Eden']['max_floor']}"
+            for symbol in was_mentions:
+                if was_mentions[symbol]["Magic Eden"]['min_pump_floor']<99999999:
+                    message+=f"{symbol}: call price - {was_mentions[symbol]['Magic Eden']['min_pump_floor']}, max price - {was_mentions[symbol]['Magic Eden']['max_floor']}"
                 was_mentions[symbol]["Magic Eden"]['min_pump_floor']=99999999
                 was_mentions[symbol]["Magic Eden"]['max_floor']=0
             while message:
