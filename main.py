@@ -101,7 +101,7 @@ async  def Magic_Eden_stats(symbol, proxy):
 app_storage={}
 try:
     sended_12=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    k=0
+    k=16
     f=0
     month={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
     while True:
@@ -266,9 +266,9 @@ try:
             while message:
                 send = message[:message[:4096].rfind('\n') + 1]
                 message = message[message[:4096].rfind('\n') + 1:]
-                for user in config.pumprassilka:
+                for user in config.rassilka:
                     try:
-                        bot2.send_message(user, send)
+                        bot.send_message(user, send)
                     except:
                         pass
         k+=1
