@@ -101,7 +101,7 @@ async  def Magic_Eden_stats(symbol, proxy):
 app_storage={}
 try:
     sended_12=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
-    k=212
+    k=336
     f=0
     month={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
     while True:
@@ -260,7 +260,7 @@ try:
             message='Итоги недели:\n'
             for symbol in was_mentions:
                 if was_mentions[symbol]["Magic Eden"]['min_pump_floor']<99999999:
-                    message+=f"{symbol}: call price - {was_mentions[symbol]['Magic Eden']['min_pump_floor']}, max price - {was_mentions[symbol]['Magic Eden']['max_floor']}"
+                    message+=f"{symbol}: call price - {was_mentions[symbol]['Magic Eden']['min_pump_floor']}, max price - {was_mentions[symbol]['Magic Eden']['max_floor']}\n"
                 was_mentions[symbol]["Magic Eden"]['min_pump_floor']=99999999
                 was_mentions[symbol]["Magic Eden"]['max_floor']=0
             while message:
@@ -271,6 +271,8 @@ try:
                         bot.send_message(user, send)
                     except:
                         pass
+            with open('mentions.json', 'w') as f1:
+                json.dump(was_mentions, f1)
         k+=1
         del mentions, was_mentions
         logger.info(f'Выполнение скрипта завершено {time.strftime("%m-%d-%Y %H:%M:%S",time.gmtime(time.time()))}')
