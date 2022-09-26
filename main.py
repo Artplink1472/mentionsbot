@@ -260,7 +260,7 @@ try:
             message='Итоги недели:\n'
             for symbol in was_mentions:
                 if was_mentions[symbol]["Magic Eden"]['min_pump_floor']<99999999:
-                    message+=f"{symbol}: call price - {was_mentions[symbol]['Magic Eden']['min_pump_floor']}, max price - {was_mentions[symbol]['Magic Eden']['max_floor']}\n"
+                    message+=f"{mentions[symbol]['name']}: call price - {was_mentions[symbol]['Magic Eden']['min_pump_floor']}, max price - {was_mentions[symbol]['Magic Eden']['max_floor']}\n"
                 was_mentions[symbol]["Magic Eden"]['min_pump_floor']=99999999
                 was_mentions[symbol]["Magic Eden"]['max_floor']=0
             while message:
