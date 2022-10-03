@@ -143,15 +143,13 @@ try:
             timeout = aiohttp.ClientTimeout(total=300)
             app_storage['session'] = aiohttp.ClientSession(timeout=timeout)
             q=0
+            proxies={0:False,1:'http://51.89.191.227:10375',2:'http://smptweets2170:d2598d@162.19.130.108:10137'}
             async with app_storage['session']:
                 tasks = []
                 for symbol in was_mentions:
                     q+=1
-                    if q%2:
-                        tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,False)))
-                    else:
-                        tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,'http://51.89.191.227:10375')))
-                    if q%234==0:
+                    tasks.append(asyncio.create_task(Magic_Eden_stats(symbol,proxies[q%3])))
+                    if q%351==0:
                         await asyncio.sleep(61)
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
