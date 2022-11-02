@@ -143,6 +143,7 @@ try:
             timeout = aiohttp.ClientTimeout(total=300)
             app_storage['session'] = aiohttp.ClientSession(timeout=timeout)
             q=0
+            proxies={}
             for i,z in enumerate(config.proxies):
                 proxies[i]=config.proxies[i]
             proxies[i+1]=False
