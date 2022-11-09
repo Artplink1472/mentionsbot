@@ -55,6 +55,7 @@ async def twitter_mentions(symbol, guest_token):
 
 async def twitter_all_mentions(symbol, guest_token):
     mentions_count = 0
+    status=False
     try:
         async with app_storage['session'].get(yarl.URL(f'https://twitter.com/i/api/2/search/adaptive.json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&include_ext_has_nft_avatar=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_ext_alt_text=true&include_quote_count=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&include_ext_sensitive_media_warning=true&include_ext_trusted_friends_metadata=true&send_error_codes=true&simple_quoted_tweet=true&q=({quote(symbol)})&tweet_search_mode=live&count=100&query_source=typed_query&pc=1&spelling_corrections=1&ext=mediaStats%2ChighlightedLabel%2ChasNftAvatar%2CvoiceInfo%2Cenrichments%2CsuperFollowMetadata%2CunmentionInfo', encoded=True),
                                                         headers={'Authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA','x-guest-token': guest_token},
@@ -73,6 +74,9 @@ async def twitter_all_mentions(symbol, guest_token):
                         cursor=mentionsresponse['timeline']['instructions'][-1]['replaceEntry']['entry']['content']['operation']['cursor']['value']
                 except Exception as e:
                     logger.info(f'2 {e} {symbol}')
+                    if status:
+                        break
+                    status=True
         except Exception as e:
             logger.info(f'!while! {e} {symbol} {mentionsresponse}')
     except Exception as e:
