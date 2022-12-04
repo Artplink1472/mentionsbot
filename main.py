@@ -47,7 +47,8 @@ async def twitter_mentions(symbol, guest_token):
                     mentions_count+=this_mentions_count
                     cursor=mentionsresponse['timeline']['instructions'][-1]['replaceEntry']['entry']['content']['operation']['cursor']['value']
             except Exception as e:
-                logger.info(f'2 {e} ')
+                logger.info(f'2 {e} {symbol}')
+                break
     except Exception as e:
         logger.info(f'twitter_mentions {e} {symbol}')
     logger.info(f'{symbol} {mentions_count}')
