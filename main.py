@@ -162,9 +162,10 @@ try:
                         await asyncio.sleep(61)
                 results = await asyncio.gather(*tasks)
                 for symbol in results:
-                    mentions[symbol[0]]['Magic Eden']['floor'].append(float(format(symbol[1]/1000000000,'.2f')))
-                    mentions[symbol[0]]['Magic Eden']['listedCount'].append(symbol[2])
-                    mentions[symbol[0]]['Magic Eden']['volume24hr'].append(float(format(symbol[3]/1000000000,'.2f')))
+                    if symbol[1] and symbol[3]:
+                        mentions[symbol[0]]['Magic Eden']['floor'].append(float(format(symbol[1]/1000000000,'.2f')))
+                        mentions[symbol[0]]['Magic Eden']['listedCount'].append(symbol[2])
+                        mentions[symbol[0]]['Magic Eden']['volume24hr'].append(float(format(symbol[3]/1000000000,'.2f')))
         start_time2 = time.time()
         bot.send_message(config.myid, f'{start_time2}')
         asyncio.run(start3(was_mentions))
