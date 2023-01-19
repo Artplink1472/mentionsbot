@@ -194,7 +194,7 @@ try:
                     except Exception as e:
                         logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
             except:
-                print(mentions[symbol]["Magic Eden"]['max_floor'],type(mentions[symbol]["Magic Eden"]['max_floor']),mentions[symbol]['Magic Eden']['floor'][-1],type(mentions[symbol]['Magic Eden']['floor'][-1])
+                print(mentions[symbol]["Magic Eden"]['max_floor'],type(mentions[symbol]["Magic Eden"]['max_floor']),mentions[symbol]['Magic Eden']['floor'][-1],type(mentions[symbol]['Magic Eden']['floor'][-1]))
             mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['volume24hr'],mentions[symbol]['mentions'],sended_12=mentions[symbol]['Magic Eden']['floor'][-24:],mentions[symbol]['Magic Eden']['listedCount'][-24:],mentions[symbol]['Magic Eden']['volume24hr'][-24:],mentions[symbol]['mentions'][-24:],sended_12[-24:]
         while message:
             send = message[:message[:4096].rfind('\n') + 1]
