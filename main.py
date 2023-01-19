@@ -171,27 +171,30 @@ try:
         asyncio.run(start3(was_mentions))
         logger.info(f'На выполнение парсинга 3 ушло {time.time() - start_time2}')
         for symbol in was_mentions:
-            mentions[symbol]["Magic Eden"]['max_floor']=max(mentions[symbol]["Magic Eden"]['max_floor'],mentions[symbol]['Magic Eden']['floor'][-1])
-            if symbol not in sended_all:
-                try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.1 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 10 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.985:
-                        message += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
-                        sended_12[-1].add(symbol)
-                except Exception as e:
-                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
-                try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and 0<mentions[symbol]['Magic Eden']['volume24hr'][-1]/mentions[symbol]['Magic Eden']['volume24hr'][0]<=0.60 and mentions[symbol]['mentions'][0] >= 10 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
-                        message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
-                        sended_12[-1].add(symbol)
-                except Exception as e:
-                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
-                try:
-                    if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and mentions[symbol]['Magic Eden']['volume24hr'][0]>=50 and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.2 and mentions[symbol]['Magic Eden']['listedCount'][-1]<mentions[symbol]['Magic Eden']['listedCount'][0] and mentions[symbol]['Magic Eden']['volume24hr'][-1]-mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
-                        message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
-                        sended_12[-1].add(symbol)
-                        mentions[symbol]["Magic Eden"]['min_pump_floor']=min(mentions[symbol]["Magic Eden"]['min_pump_floor'],mentions[symbol]['Magic Eden']['floor'][-1])
-                except Exception as e:
-                    logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+            try:
+                mentions[symbol]["Magic Eden"]['max_floor']=max(mentions[symbol]["Magic Eden"]['max_floor'],mentions[symbol]['Magic Eden']['floor'][-1])
+                if symbol not in sended_all:
+                    try:
+                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.1 and mentions[symbol]['mentions'][-1]/was_mentions[symbol]['mentions'][0] >= 1.5 and mentions[symbol]['mentions'][0] >= 10 and mentions[symbol]['Magic Eden']['listedCount'][-1]/mentions[symbol]['Magic Eden']['listedCount'][0]<=0.985:
+                            message += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                            sended_12[-1].add(symbol)
+                    except Exception as e:
+                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                    try:
+                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and 0<mentions[symbol]['Magic Eden']['volume24hr'][-1]/mentions[symbol]['Magic Eden']['volume24hr'][0]<=0.60 and mentions[symbol]['mentions'][0] >= 10 and was_mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
+                            message2 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                            sended_12[-1].add(symbol)
+                    except Exception as e:
+                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+                    try:
+                        if was_mentions[symbol]['Magic Eden']['floor'][0] != 'Just added' and (mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]-1)*100/(mentions[symbol]['mentions'][-1]-was_mentions[symbol]['mentions'][0])>=3 and mentions[symbol]['mentions'][-1] >= 10 and mentions[symbol]['mentions'][-1]-mentions[symbol]['mentions'][0] >= 6 and mentions[symbol]['Magic Eden']['volume24hr'][0]>=50 and mentions[symbol]['Magic Eden']['floor'][-1]/was_mentions[symbol]['Magic Eden']['floor'][0]>=1.2 and mentions[symbol]['Magic Eden']['listedCount'][-1]<mentions[symbol]['Magic Eden']['listedCount'][0] and mentions[symbol]['Magic Eden']['volume24hr'][-1]-mentions[symbol]['Magic Eden']['volume24hr'][0]>=50:
+                            message3 += f"{mentions[symbol]['name']} - Twitter mentions {was_mentions[symbol]['mentions'][0]}-->{mentions[symbol]['mentions'][-1]},\nfloor {was_mentions[symbol]['Magic Eden']['floor'][0]}-->{mentions[symbol]['Magic Eden']['floor'][-1]},\nlistedCount {was_mentions[symbol]['Magic Eden']['listedCount'][0]}-->{mentions[symbol]['Magic Eden']['listedCount'][-1]},\nSold24hr {was_mentions[symbol]['Magic Eden']['volume24hr'][0]}-->{mentions[symbol]['Magic Eden']['volume24hr'][-1]}\n"
+                            sended_12[-1].add(symbol)
+                            mentions[symbol]["Magic Eden"]['min_pump_floor']=min(mentions[symbol]["Magic Eden"]['min_pump_floor'],mentions[symbol]['Magic Eden']['floor'][-1])
+                    except Exception as e:
+                        logger.info(f'!!!!!!!!4 message {e}!!!!!!!!')
+            except:
+                print(mentions[symbol]["Magic Eden"]['max_floor'],type(mentions[symbol]["Magic Eden"]['max_floor']),mentions[symbol]['Magic Eden']['floor'][-1],type(mentions[symbol]['Magic Eden']['floor'][-1])
             mentions[symbol]['Magic Eden']['floor'],mentions[symbol]['Magic Eden']['listedCount'],mentions[symbol]['Magic Eden']['volume24hr'],mentions[symbol]['mentions'],sended_12=mentions[symbol]['Magic Eden']['floor'][-24:],mentions[symbol]['Magic Eden']['listedCount'][-24:],mentions[symbol]['Magic Eden']['volume24hr'][-24:],mentions[symbol]['mentions'][-24:],sended_12[-24:]
         while message:
             send = message[:message[:4096].rfind('\n') + 1]
